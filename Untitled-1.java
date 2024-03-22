@@ -32,7 +32,7 @@ public class HotelReservationSystem {
     private List<Reservation> reservations = new ArrayList<>();
 
     public void start() {
-        // Initialize rooms
+
         for (int i = 1; i <= 5; i++) {
             rooms.add(new Room(i));
         }
@@ -45,13 +45,13 @@ public class HotelReservationSystem {
             for (Room room : rooms) {
                 System.out.println("Room Number: " + room.roomNumber + ", Reserved: " + (room.isReserved ? "Yes" : "No"));
             }
-            System.out.println("1. Reserve a room");
+            System.out.println("1. Reserve room");
             System.out.println("2. View Reservations");
             System.out.println("3. Get Room Number");
             System.out.println("4. Update Reservations");
             System.out.println("5. Delete Reservations");
-            System.out.println("6. Add a Room");
-            System.out.println("7. Remove a Room");
+            System.out.println("6. Add Rooms");
+            System.out.println("7. Remove Rooms");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
@@ -73,10 +73,10 @@ public class HotelReservationSystem {
                     deleteReservation(scanner);
                     break;
                 case 6:
-                    addRoom(scanner);
+                    addRooms(scanner);
                     break;
                 case 7:
-                    removeRoom(scanner);
+                    removeRooms(scanner);
                     break;
                 case 0:
                     exit();
@@ -88,81 +88,109 @@ public class HotelReservationSystem {
         }
     }
 
-    private void addRoom(Scanner scanner) {
-        System.out.print("Enter room number to add: ");
-        int newRoomNumber = scanner.nextInt();
-        scanner.nextLine();
-        for (Room r : rooms) {
-            if (r.roomNumber == newRoomNumber) {
-                System.out.println("Room number already exists.");
-                return;
-            }
-        }
-
-        Room newRoom = new Room(newRoomNumber);
-        rooms.add(newRoom);
-        System.out.println("Room added successfully!");
-    }
-
-    private void removeRoom(Scanner scanner) {
-        System.out.print("Enter room number to remove: ");
-        int roomNumberToRemove = scanner.nextInt();
-        scanner.nextLine();
-
-        Room roomToRemove = null;
-        for (Room r : rooms) {
-            if (r.roomNumber == roomNumberToRemove) {
-                roomToRemove = r;
-                break;
-            }
-        }
-
-        if (roomToRemove != null) {
-            if (roomToRemove.isReserved) {
-                System.out.println("Cannot remove a reserved room.");
-            } else {
-                rooms.remove(roomToRemove);
-                System.out.println("Room removed successfully!");
-            }
-        } else {
-            System.out.println("Room not found.");
-        }
-    }
-
     private void reserveRoom(Scanner scanner) {
         System.out.print("Enter guest name: ");
         String guestName = scanner.nextLine();
-        System.out.print("Enter room number: ");
-        int roomNumber = scanner.nextInt();
+        System.out.print("Enter the number of rooms to reserve: ");
+        int numRooms = scanner.nextInt();
         scanner.nextLine();
-        Room room = null;
-        for (Room r : rooms) {
-            if (r.roomNumber == roomNumber && !r.isReserved) {
-                room = r;
-                break;
-            }
-        }
 
-        if (room == null) {
-            System.out.println("Invalid room number or room is already reserved.");
-            return;
+        List<Room> roomsToReserve = new ArrayList<>();
+        for (int i = 0; i < numRooms; i++) {
+            System.out.print("Enter room number for reservation " + (i + 1) + ": ");
+            int roomNumber = scanner.nextInt();
+            scanner.nextLine();
+
+            Room room = null;
+            for (Room r : rooms) {
+                if (r.roomNumber == roomNumber && !r.isReserved) {
+                    room = r;
+                    break;
+                }
+            }
+
+            if (room == null) {
+                System.out.println("Invalid room number or room is already reserved for reservation " + (i + 1) + ".");
+                return;
+            }
+
+            roomsToReserve.add(room);
         }
 
         System.out.print("Enter contact number (11 digits starting with '01'): ");
         String contactNumber = scanner.nextLine();
-
 
         if (contactNumber.length() != 11 || !contactNumber.startsWith("01")) {
             System.out.println("Contact number must be 11 digits starting with '01'. Please try again.");
             return;
         }
 
-        int id = reservations.size() + 1;
-        Reservation reservation = new Reservation(id, guestName, room, contactNumber);
-        reservations.add(reservation);
-
-        System.out.println("Reservation successful! Your reservation ID is: " + id);
+        for (Room room : roomsToReserve) {
+            int id = reservations.size() + 1;
+            Reservation reservation = new Reservation(id, guestName, room, contactNumber);
+            reservations.add(reservation);
+            System.out.println("Reservation successful for room " + room.roomNumber + "! Your reservation ID is: " + id);
+        }
     }
+
+    private void addRooms(Scanner scanner) {
+        System.out.print("Enter the number of rooms to add: ");
+        int numRoomsToAdd = scanner.nextInt();
+        scanner.nextLine();
+
+        for (int i = 0; i < numRoomsToAdd; i++) {
+            System.out.print("Enter room number to add: ");
+            int newRoomNumber = scanner.nextInt();
+            scanner.nextLine();
+
+            boolean roomExists = false;
+            for (Room r : rooms) {
+                if (r.roomNumber == newRoomNumber) {
+                    System.out.println("Room number already exists.");
+                    roomExists = true;
+                    break;
+                }
+            }
+
+            if (!roomExists) {
+                Room newRoom = new Room(newRoomNumber);
+                rooms.add(newRoom);
+                System.out.println("Room added successfully!");
+            }
+        }
+    }
+
+    private void removeRooms(Scanner scanner) {
+        System.out.print("Enter the number of rooms to remove: ");
+        int numRoomsToRemove = scanner.nextInt();
+        scanner.nextLine();
+
+        for (int i = 0; i < numRoomsToRemove; i++) {
+            System.out.print("Enter room number to remove: ");
+            int roomNumberToRemove = scanner.nextInt();
+            scanner.nextLine();
+
+            Room roomToRemove = null;
+            for (Room r : rooms) {
+                if (r.roomNumber == roomNumberToRemove) {
+                    roomToRemove = r;
+                    break;
+                }
+            }
+
+            if (roomToRemove != null) {
+                if (roomToRemove.isReserved) {
+                    System.out.println("Cannot remove a reserved room.");
+                } else {
+                    rooms.remove(roomToRemove);
+                    System.out.println("Room removed successfully!");
+                }
+            } else {
+                System.out.println("Room not found.");
+            }
+        }
+    }
+
 
     private void viewReservations() {
         System.out.println("Current Reservations:");
@@ -235,24 +263,30 @@ public class HotelReservationSystem {
     }
 
     private void deleteReservation(Scanner scanner) {
-        System.out.print("Enter reservation ID to delete: ");
-        int reservationId = scanner.nextInt();
+        System.out.print("Enter the number of reservations to delete: ");
+        int numReservations = scanner.nextInt();
         scanner.nextLine();
 
-        Reservation reservation = null;
-        for (Reservation r : reservations) {
-            if (r.id == reservationId) {
-                reservation = r;
-                break;
-            }
-        }
+        for (int i = 0; i < numReservations; i++) {
+            System.out.print("Enter reservation ID to delete for reservation " + (i + 1) + ": ");
+            int reservationId = scanner.nextInt();
+            scanner.nextLine();
 
-        if (reservation != null) {
-            reservation.room.isReserved = false;
-            reservations.remove(reservation);
-            System.out.println("Reservation deleted successfully!");
-        } else {
-            System.out.println("Reservation not found for the given ID.");
+            Reservation reservation = null;
+            for (Reservation r : reservations) {
+                if (r.id == reservationId) {
+                    reservation = r;
+                    break;
+                }
+            }
+
+            if (reservation != null) {
+                reservation.room.isReserved = false;
+                reservations.remove(reservation);
+                System.out.println("Reservation " + reservationId + " deleted successfully!");
+            } else {
+                System.out.println("Reservation not found for the given ID.");
+            }
         }
     }
 
