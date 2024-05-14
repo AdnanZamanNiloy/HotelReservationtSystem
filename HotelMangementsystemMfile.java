@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 public class HotelReservationSystem {
     class Room {
@@ -299,14 +297,13 @@ public class HotelReservationSystem {
     private void exit() {
         System.out.print("Exiting System");
         int i = 5;
-        while(i!=0){
+        while (i != 0) {
             System.out.print(".");
             try {
                 Thread.sleep(1000);
-        }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-           }
+            }
             i--;
         }
         System.out.println();
@@ -322,55 +319,60 @@ public class HotelReservationSystem {
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
             PrintStream printStream = new PrintStream(fileOutputStream);
             System.setOut(printStream);
-            while(true) {
+
+            while (scanner.hasNextInt()) {
                 int choice = scanner.nextInt();
-                if (choice == 1) {
-                    File inputFile1 = new File("inputreserve.txt");
-                    Scanner scanner1 = new Scanner(inputFile1);
-                    hotelReservationSystem.start(scanner1);
+                scanner.nextLine(); // Consume the newline character
 
-
-                } else if (choice == 2) {
-                    File inputFile2 = new File("inputvewreserve.txt");
-                    Scanner scanner2 = new Scanner(inputFile2);
-                    hotelReservationSystem.start(scanner2);
-
-                } else if (choice == 3) {
-                    File inputFile3 = new File("inputgetroom.txt");
-                    Scanner scanner3 = new Scanner(inputFile3);
-                    hotelReservationSystem.start(scanner3);
-
-                } else if (choice == 4) {
-                    File inputFile4 = new File("inputupdate.txt");
-                    Scanner scanner4 = new Scanner(inputFile4);
-                    hotelReservationSystem.start(scanner4);
-
-                } else if (choice == 5) {
-                    File inputFile5 = new File("inputdelete.txt");
-                    Scanner scanner5 = new Scanner(inputFile5);
-                    hotelReservationSystem.start(scanner5);
-
-                } else if (choice == 6) {
-                    File inputFile6 = new File("inputadd.txt");
-                    Scanner scanner6 = new Scanner(inputFile6);
-                    hotelReservationSystem.start(scanner6);
-
-                } else if (choice == 7) {
-                    File inputFile7 = new File("inputremove.txt");
-                    Scanner scanner7 = new Scanner(inputFile7);
-                    hotelReservationSystem.start(scanner7);
-
-                } else {
-                    System.out.println("Invalid choice. Try again.");
-                    break;
+                switch (choice) {
+                    case 1:
+                        hotelReservationSystem = new HotelReservationSystem();
+                        File inputFile1 = new File("inputreserve.txt");
+                        Scanner scanner1 = new Scanner(inputFile1);
+                        hotelReservationSystem.start(scanner1);
+                        break;
+                    case 2:
+                        hotelReservationSystem = new HotelReservationSystem();
+                        File inputFile2 = new File("inputvewreserve.txt");
+                        Scanner scanner2 = new Scanner(inputFile2);
+                        hotelReservationSystem.start(scanner2);
+                        break;
+                    case 3:
+                        hotelReservationSystem = new HotelReservationSystem();
+                        File inputFile3 = new File("inputgetroom.txt");
+                        Scanner scanner3 = new Scanner(inputFile3);
+                        hotelReservationSystem.start(scanner3);
+                        break;
+                    case 4:
+                        hotelReservationSystem = new HotelReservationSystem();
+                        File inputFile4 = new File("inputupdate.txt");
+                        Scanner scanner4 = new Scanner(inputFile4);
+                        hotelReservationSystem.start(scanner4);
+                        break;
+                    case 5:
+                        hotelReservationSystem = new HotelReservationSystem();
+                        File inputFile5 = new File("inputdelete.txt");
+                        Scanner scanner5 = new Scanner(inputFile5);
+                        hotelReservationSystem.start(scanner5);
+                        break;
+                    case 6:
+                        hotelReservationSystem = new HotelReservationSystem();
+                        File inputFile6 = new File("inputadd.txt");
+                        Scanner scanner6 = new Scanner(inputFile6);
+                        hotelReservationSystem.start(scanner6);
+                        break;
+                    case 7:
+                        hotelReservationSystem = new HotelReservationSystem();
+                        File inputFile7 = new File("inputremove.txt");
+                        Scanner scanner7 = new Scanner(inputFile7);
+                        hotelReservationSystem.start(scanner7);
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Try again.");
+                        break;
                 }
-
             }
-
-            //hotelReservationSystem.start(scanner);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             System.exit(1);
         }
